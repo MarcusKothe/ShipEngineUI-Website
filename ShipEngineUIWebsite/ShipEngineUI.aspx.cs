@@ -19,7 +19,7 @@ namespace ShipEngineUI
 
             GetWarehouses();
 
-            ship_date_TextBox.Text = DateTime.Now.ToString("dd-MM-yyyy");
+            ship_date_TextBox.Text = DateTime.Now.ToString("yyyy-MM-dd");
         }
 
         public class ShipEngineUI
@@ -520,8 +520,6 @@ namespace ShipEngineUI
                 responseObjectGet = (HttpWebResponse)requestObject.GetResponse();
                 string streamResponse = null;
 
-
-
                 //Get Address
                 using (Stream stream = responseObjectGet.GetResponseStream())
                 {
@@ -766,7 +764,7 @@ namespace ShipEngineUI
                 ShipEngineUI.shipTo_state_province = shipTo_state_province_TextBox.Text;
                 ShipEngineUI.shipTo_postal_code = shipTo_postal_code_TextBox.Text;
                 ShipEngineUI.shipTo_country_code = shipTo_country_code_TextBox.Text;
-                //ShipEngineUI.shipTo_address_residential_indicator = shipTo_address_residential_indicator_comboBox.SelectedItem.ToString();
+                ShipEngineUI.shipTo_address_residential_indicator = "no";
                 //if (shipTo_address_residential_indicator_comboBox.SelectedItem == "")
                 //{
                 //    ShipEngineUI.shipTo_address_residential_indicator = "no";
@@ -782,7 +780,7 @@ namespace ShipEngineUI
                 ShipEngineUI.shipFrom_state_province = shipFrom_state_province_TextBox.Text;
                 ShipEngineUI.shipFrom_postal_code = shipFrom_postal_code_TextBox.Text;
                 ShipEngineUI.shipFrom_country_code = shipFrom_country_code_TextBox.Text;
-                //ShipEngineUI.shipFrom_address_residential_indicator = shipFrom_address_residential_indicator_comboBox.SelectedItem.ToString();
+                ShipEngineUI.shipFrom_address_residential_indicator = "no";
                 //if (shipFrom_address_residential_indicator_comboBox.SelectedItem == "")
                 //{
                 //    ShipEngineUI.shipFrom_address_residential_indicator = "no";
@@ -869,38 +867,8 @@ namespace ShipEngineUI
                     "\r\n            \"address_residential_indicator\": \"" + ShipEngineUI.shipFrom_address_residential_indicator + "\"" +
                     "\r\n        }," +
                     "\r\n        \"confirmation\": \"" + delivery_confirmation_ComboBox.SelectedItem.ToString() + "\"," +
-                    "\r\n        \"advanced_options\": {" +
-                    "\r\n            \"bill_to_account\": \"" + ShipEngineUI.advanced_options_bill_to_account + "\"," +
-                    "\r\n            \"bill_to_country_code\": \"" + ShipEngineUI.advanced_options_bill_to_country_code + "\"," +
-                    "\r\n            \"bill_to_party\": " + ShipEngineUI.advanced_options_bill_to_party + "," +
-                    "\r\n            \"bill_to_postal_code\": \"" + ShipEngineUI.advanced_options_bill_to_postal_code + "\"," +
-                    "\r\n            \"canada_delivered_duty\": null," +
-                    "\r\n            \"contains_alcohol\": \"" + ShipEngineUI.advanced_options_contains_alcohol + "\"," +
-                    "\r\n            \"delivered_duty_paid\": \"" + ShipEngineUI.advanced_options_delivered_duty_paid + "\"," +
-                    "\r\n            \"non_machinable\": \"" + ShipEngineUI.advanced_options_non_machinable + "\"," +
-                    "\r\n            \"saturday_delivery\": \"" + ShipEngineUI.advanced_options_saturday_delivery + "\"," +
-                    "\r\n            \"third-party-consignee\": \"false\"," +
-                    "\r\n            \"ancillary_endorsements_option\": null," +
-                    "\r\n            \"freight_class\": null," +
-                    "\r\n            \"custom_field_1\": \"" + ShipEngineUI.advanced_options_custom_field1 + "\"," +
-                    "\r\n            \"custom_field_2\": \"" + ShipEngineUI.advanced_options_custom_field2 + "\"," +
-                    "\r\n            \"custom_field_3\": \"" + ShipEngineUI.advanced_options_custom_field3 + "\"," +
-                    "\r\n            \"return_pickup_attempts\": null," +
-                    "\r\n            \"dry_ice\": \"" + ShipEngineUI.advanced_options_dry_ice + "\"," +
-                    "\r\n            \"dry_ice_weight\": {" +
-                    "\r\n                \"value\": \"" + ShipEngineUI.advanced_options_dry_ice_weight_value + "\"," +
-                    "\r\n                \"unit\": \"" + ShipEngineUI.advanced_options_dry_ice_weight_unit + "\"" +
-                    "\r\n            }," +
-                    "\r\n            \"collect_on_delivery\": {" +
-                    "\r\n                \"payment_type\": \"none\"," +
-                    "\r\n                \"payment_amount\": {" +
-                    "\r\n                    \"currency\": \"usd\"," +
-                    "\r\n                    \"amount\": \"0.00\"" +
-                    "\r\n                }" +
-                    "\r\n            }" +
-                    "\r\n        }," +
-                    "\r\n        \"origin_type\": " + ShipEngineUI.advanced_options_origin_type + "," +
-                    "\r\n        \"insurance_provider\": \"" + ShipEngineUI.insurance_provider + "\"," +
+                    "\r\n        \"origin_type\": \"\"," +
+                    "\r\n        \"insurance_provider\": \"" + insurance_provider_comboBox.SelectedItem.ToString() + "\"," +
                     "\r\n        \"packages\": [" +
                     "\r\n            {" +
                     "\r\n                \"package_code\": \"" + package_code_ComboBox.SelectedItem.ToString() + "\"," +
@@ -915,8 +883,8 @@ namespace ShipEngineUI
                     "\r\n                    \"height\": " + ShipEngineUI.packages_dimensions_height + "" +
                     "\r\n                }," +
                     "\r\n                \"insured_value\": {" +
-                    "\r\n                    \"currency\": \"" + ShipEngineUI.packages_insured_value_currency + "\"," +
-                    "\r\n                    \"amount\": " + ShipEngineUI.packages_insured_value_amount +
+                    "\r\n                    \"currency\": \"" + insured_value_currency_comboBox.SelectedItem.ToString() + "\"," +
+                    "\r\n                    \"amount\": \"" + insured_value_amont_numericUpDown.Text + "\"," +
                     "\r\n                }," +
                     "\r\n                \"label_messages\": {" +
                     "\r\n                    \"reference1\": null," +
@@ -959,6 +927,7 @@ namespace ShipEngineUI
 
                 stream.Close();
 
+                
                 //LOAD LISTBOX
                 using (var reader = new StringReader(responseBodyText))
                 {
@@ -1009,6 +978,7 @@ namespace ShipEngineUI
                     rate_response_RichTextBox.Value = rate_response_RichTextBox.Value.Replace("\"amount\": 0.0", "");
                     rate_response_RichTextBox.Value = rate_response_RichTextBox.Value.Replace(" ", "");
                     rate_response_RichTextBox.Value = rate_response_RichTextBox.Value.Replace("\"", "");
+                    Textarea1.Value = rateRequestBody;
 
                 }
 
@@ -1035,7 +1005,9 @@ namespace ShipEngineUI
                                 string ShipEngineErrorBody1 = currentLine.Replace("\"message\": \"", "");
                                 string ShipEngineErrorBody = ShipEngineErrorBody1.Replace("\",", "");
 
-                                ShowMessageBox(this, "ERROR GETTING RATES");
+                                rate_response_RichTextBox.Value = ShipEngineErrorBody;
+
+                                ShowMessageBox(this, Exception.ToString());
 
                             }
                         }

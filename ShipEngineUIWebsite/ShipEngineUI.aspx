@@ -107,6 +107,14 @@
             top: 78px;
             position: absolute;
         }
+        .auto-style16 {
+            position: absolute;
+            left: 1069px;
+            top: 356px;
+            width: 305px;
+            height: 265px;
+            margin-top: 0px;
+        }
     </style>
 </head>
 <body>
@@ -222,8 +230,10 @@
             </asp:DropDownList>
             <br />
             <br />
-            Insured Value <asp:TextBox ID="insured_value_amont_numericUpDown" runat="server" Height="21px" Width="20px"></asp:TextBox>
-            <asp:DropDownList ID="Dinsured_value_currency_comboBox" runat="server" Height="21px" Width="100px" CssClass="auto-style7"></asp:DropDownList>
+            Insured Value <asp:TextBox ID="insured_value_amont_numericUpDown" runat="server" Height="21px" Width="20px">0</asp:TextBox>
+            <asp:DropDownList ID="insured_value_currency_comboBox" runat="server" Height="21px" Width="100px" CssClass="auto-style7">
+                <asp:ListItem>USD</asp:ListItem>
+            </asp:DropDownList>
 
         </fieldset>
 
@@ -249,6 +259,12 @@
         <fieldset id="Fieldset7" runat="server" class="auto-style10">
 
             <textarea id="rate_response_RichTextBox" runat="server" class="auto-style12"></textarea>
+
+           </fieldset>
+
+        <fieldset id="Fieldset8" runat="server" class="auto-style16">
+
+            <textarea id="Textarea1" runat="server" class="auto-style12"></textarea>
 
            </fieldset>
 

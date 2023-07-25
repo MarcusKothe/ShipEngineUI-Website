@@ -582,13 +582,13 @@ namespace ShipEngineUI
         protected global::System.Web.UI.WebControls.TextBox insured_value_amont_numericUpDown;
 
         /// <summary>
-        /// Dinsured_value_currency_comboBox control.
+        /// insured_value_currency_comboBox control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList Dinsured_value_currency_comboBox;
+        protected global::System.Web.UI.WebControls.DropDownList insured_value_currency_comboBox;
 
         /// <summary>
         /// Fieldset6 control.
@@ -670,5 +670,23 @@ namespace ShipEngineUI
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTextArea rate_response_RichTextBox;
+
+        /// <summary>
+        /// Fieldset8 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Fieldset8;
+
+        /// <summary>
+        /// Textarea1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea Textarea1;
     }
 }
