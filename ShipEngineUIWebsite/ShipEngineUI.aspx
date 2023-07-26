@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ShipEngineUI.aspx.cs" Inherits="ShipEngineUI.ShipEngineUIWebsite" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ShipEngineUI.aspx.cs" Inherits="ShipEngineUI.ShipEngineUIWebsite" Async="true" %>
 
 <!DOCTYPE html>
 
@@ -12,36 +12,44 @@
             top: 267px;
             position: absolute;
         }
+        .auto-styledropdown {
+            z-index: 154;
+            left: 103px;
+            top: 294px;
+            position: absolute;
+        }
         .auto-style2 {
             position: absolute;
             left: 15px;
-            top: 96px;
+            top: 85px;
             width: 308px;
             height: 324px;
         }
         .auto-style3 {
             position: absolute;
-            left: 356px;
-            top: 97px;
+            left: 360px;
+            top: 85px;
             width: 308px;
             height: 324px;
             
         }
         .auto-style4 {
+            border-style: none;
+            border-color: inherit;
+            border-width: 0;
             position: absolute;
-            left: 356px;
-            top: 440px;
-            width: 305px;
+            left: 360px;
+            top: 430px;
+            width: 308px;
             height: 28px;
             margin-top: 0px;
-            border: 0;
-        }
+            }
         .auto-style5 {
             position: absolute;
-            left: 13px;
-            top: 484px;
-            width: 308px;
-            height: 191px;
+            left: 15px;
+            top: 465px;
+            width: 315px;
+            height: 166px;
         }
         .auto-style6 {
             position: absolute;
@@ -49,47 +57,57 @@
             top: 46px;
             width: 654px;
             height: 22px;
-             border: 0;
+            border: 0;
         }
         .auto-style7 {
             margin-top: 0px;
+            height: 28px;
+            width: 308px;
         }
         .auto-style8 {
             border-style: none;
             border-color: inherit;
             border-width: 0;
             position: absolute;
-            left: 13px;
-            top: 444px;
+            left: 15px;
+            top: 430px;
             width: 308px;
             height: 22px;
             }
         .auto-style9 {
+            border-style: none;
+            border-color: inherit;
+            border-width: 0;
             position: absolute;
-            left: 697px;
-            top: 48px;
+            left: 690px;
+            top: 45px;
             width: 440px;
-            height: 705px;
+            height: 770px;
+            margin-left: 0px;
         }
         .auto-style10 {
+            border-style: none;
+            border-color: inherit;
+            border-width: 0;
             position: absolute;
-            left: 357px;
-            top: 484px;
-            width: 305px;
+            left: 350px;
+            top: 460px;
+            width: 309px;
             height: 265px;
             margin-top: 0px;
         }
         .auto-style11 {
             position: absolute;
             left: 15px;
-            top: 688px;
-            width: 305px;
-            height: 65px;
+            top: 655px;
+            width: 306px;
+            height: 121px;
             margin-top: 0px;
         }
+
         .auto-style12 {
-            width: 292px;
-            height: 255px;
+            width: 305px;
+            height: 305px;
         }
         .auto-style13 {
             z-index: 138;
@@ -109,10 +127,36 @@
         }
         .auto-style16 {
             position: absolute;
-            left: 1069px;
-            top: 356px;
+            left: 1155px;
+            top: 485px;
+            width: 285px;
+            height: 243px;
+            margin-top: 0px;
+            right: 20px;
+        }
+        .auto-style17 {
+            position: absolute;
+            left: 1143px;
+            top: 26px;
             width: 305px;
             height: 265px;
+            margin-top: 0px;
+        }
+        .auto-style18 {
+            border-style: none;
+            border-color: inherit;
+            border-width: 0;
+            position: absolute;
+            left: 355px;
+            top: 750px;
+            width: 320px;
+            height: 27px;
+            margin-top: 0px;
+            right: 690px;
+        }
+        .auto-style19 {
+            width: 324px;
+            height: 274px;
             margin-top: 0px;
         }
     </style>
@@ -137,8 +181,9 @@
         <textarea id="carrier_id_RichTextBox" runat="server" cols="20" name="S1" rows="2"  hidden="hidden" readonly="readonly"></textarea>
         <textarea id="service_code_RichTextBox" runat="server" cols="20" name="S2" rows="2"  hidden="hidden" readonly="readonly"></textarea>
         <textarea id="package_code_RichTextBox" runat="server" cols="20" name="S2" rows="2"  hidden="hidden" readonly="readonly"></textarea>
+        <textarea id="label_RichTextBox" runat="server" cols="20" name="S2" rows="2"  hidden="hidden" readonly="readonly"></textarea>
 
-
+            
         </div>
             
         <fieldset id="shipfromgroupBox" runat="server" class="auto-style2">
@@ -164,6 +209,10 @@
         <asp:TextBox id="shipFrom_country_code_TextBox" style="font-family:'Roboto'; font-size:8pt; " runat="server" Width="195" Height="21" TabIndex="29" CssClass="auto-style1"></asp:TextBox>
         <asp:Label id="label8" style="z-index:155; left:16px; top:108px; font-family:'Roboto'; font-size:8pt; position:absolute;" runat="server" Width="79" Height="18">Address Line 1</asp:Label>
         <asp:Label id="label7" style="z-index:156; left:15px; top:189px; font-family:'Roboto'; font-size:8pt; position:absolute;" runat="server" Width="65" Height="18">City Locality</asp:Label>
+        <asp:DropDownList ID="shipFrom_address_residential_indicator_comboBox" runat="server" style="font-family:'Roboto'; font-size:8pt; " Width="202" Height="21" TabIndex="29" CssClass="auto-styledropdown">
+            <asp:ListItem Selected="True">No</asp:ListItem>
+            <asp:ListItem>Yes</asp:ListItem>
+            </asp:DropDownList>
         </fieldset>
 
 
@@ -190,11 +239,15 @@
         <asp:TextBox id="shipTo_country_code_TextBox" style="font-family:'Roboto'; font-size:8pt; " runat="server" Width="195" Height="21" TabIndex="29" CssClass="auto-style1"></asp:TextBox>
         <asp:Label id="label16" style="z-index:155; left:16px; top:108px; font-family:'Roboto'; font-size:8pt; position:absolute;" runat="server" Width="79" Height="18">Address Line 1</asp:Label>
         <asp:Label id="label17" style="z-index:156; left:15px; top:189px; font-family:'Roboto'; font-size:8pt; position:absolute;" runat="server" Width="65" Height="18">City Locality</asp:Label>
+        <asp:DropDownList ID="shipTo_address_residential_indicator_comboBox" runat="server" style="font-family:'Roboto'; font-size:8pt; " Width="202" Height="21" TabIndex="29" CssClass="auto-styledropdown">
+            <asp:ListItem Selected="True">No</asp:ListItem>
+            <asp:ListItem>Yes</asp:ListItem>
+            </asp:DropDownList>
         </fieldset>
 
         <fieldset id="Fieldset1" runat="server" class="auto-style9">
 
-            <asp:Image ID="Image1" runat="server" Height="64px" Width="53px" />
+            <asp:Image ID="labelImageBox" runat="server" Height="730px" Width="448px" OnClientClick="labelImageBox_Click" />
 
         </fieldset>
 
@@ -237,7 +290,7 @@
 
         </fieldset>
 
-        <fieldset id="Fieldset6" runat="server" class="auto-style4" style="font-family:'Roboto'; font-size:8pt; position:absolute;">
+        <fieldset id="Fieldset6" runat="server" class="auto-style4" style="font-family:'Roboto'; font-size:8pt; ">
 
             Ship Date <asp:TextBox ID="ship_date_TextBox" runat="server"></asp:TextBox> <asp:Button ID="get_Rates_Button" runat="server" Text="Get Rates" OnClick="get_Rates_Button_Click" />
 
@@ -258,17 +311,33 @@
 
         <fieldset id="Fieldset7" runat="server" class="auto-style10">
 
-            <textarea id="rate_response_RichTextBox" runat="server" class="auto-style12"></textarea>
+            <textarea id="rate_response_RichTextBox" runat="server" class="auto-style19" cols="20" name="S4" rows="1"></textarea>
 
            </fieldset>
 
-        <fieldset id="Fieldset8" runat="server" class="auto-style16">
+        <fieldset id="Fieldset8" runat="server" class="auto-style17">
 
-            <textarea id="Textarea1" runat="server" class="auto-style12"></textarea>
+            <textarea id="Textarea1" runat="server" class="auto-style12" cols="20" name="S3" rows="1"></textarea>
 
            </fieldset>
 
+        <fieldset id="Fieldset9" runat="server" class="auto-style18">
 
+            <asp:Button ID="create_label_Button" runat="server" Text="Create Label" OnClick="create_label_Button_Click" />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <asp:Button ID="print_Button" runat="server" Text="Print Label" OnClick="print_Button_Click" Visible="False" />
+
+           </fieldset>
+
+        <fieldset id="Fieldset10" runat="server" class="auto-style16">
+            
+
+
+            <asp:TextBox ID="void_label_id_TextBox" runat="server"></asp:TextBox>
+
+
+
+           </fieldset>
     </form>
 </body>
 </html>

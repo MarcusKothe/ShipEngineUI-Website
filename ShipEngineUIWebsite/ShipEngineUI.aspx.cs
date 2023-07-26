@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
+using System.Web.Services.Description;
 using System.Web.UI;
+using System.Drawing;
 using System.Web.UI.WebControls;
 
 namespace ShipEngineUI
@@ -22,8 +26,11 @@ namespace ShipEngineUI
             ship_date_TextBox.Text = DateTime.Now.ToString("yyyy-MM-dd");
         }
 
+
         public class ShipEngineUI
         {
+
+            public static string ImageURL = "";
             public static bool has_error = false;
 
             public static string label_id = "";
@@ -500,7 +507,6 @@ namespace ShipEngineUI
 
             int WHselectedindex = warehouse_id_ComboBox.SelectedIndex;
             int Cselectedindex = carrier_id_ComboBox.SelectedIndex;
-
 
 
             try
@@ -1018,6 +1024,313 @@ namespace ShipEngineUI
             {
                 ShowMessageBox(this, exeption.ToString());
             }
+        }
+
+        protected void create_label_Button_Click(object sender, EventArgs e)
+        {
+
+            label_RichTextBox.Value = string.Empty;
+            void_label_id_TextBox.Text = string.Empty;
+            this.AsyncMode = true;
+
+            try
+            {
+                string carrier_id1 = carrier_id_ComboBox.SelectedItem.ToString();
+                carrier_id1 = carrier_id1.Remove(carrier_id1.IndexOf("|") + 1);
+                string carrier_id = carrier_id1.Replace("|", "");
+
+                string service_code1 = service_code_ComboBox.SelectedItem.ToString();
+                service_code1 = service_code1.Remove(service_code1.IndexOf("|") + 1);
+                string service_code = service_code1.Replace("|", "");
+
+                //LOGID
+                Random logID = new Random();
+                string labelLogId = logID.Next(0, 1000000).ToString("D6");
+
+                //SHIP DATE
+                string ship_date = ship_date_TextBox.Text;
+
+
+                //SHIPENGINE UI VARIABLES
+                #region SHIPENGINE UI VARIABLES
+                ShipEngineUI.shipTo_name = shipTo_name_TextBox.Text;
+                ShipEngineUI.shipTo_phone = shipTo_phone_TextBox.Text;
+                ShipEngineUI.shipTo_company_name = shipTo_company_name_TextBox.Text;
+                ShipEngineUI.shipTo_address_line1 = shipTo_address_line1_TextBox.Text;
+                ShipEngineUI.shipTo_address_line2 = shipTo_address_line2_TextBox.Text;
+                ShipEngineUI.shipTo_address_line3 = shipTo_address_line3_TextBox.Text;
+                ShipEngineUI.shipTo_city_locality = shipTo_city_locality_TextBox.Text;
+                ShipEngineUI.shipTo_state_province = shipTo_state_province_TextBox.Text;
+                ShipEngineUI.shipTo_postal_code = shipTo_postal_code_TextBox.Text;
+                ShipEngineUI.shipTo_country_code = shipTo_country_code_TextBox.Text;
+                ShipEngineUI.shipTo_address_residential_indicator = shipTo_address_residential_indicator_comboBox.SelectedItem.Text;
+                //if (shipTo_address_residential_indicator_comboBox.SelectedItem == "")
+                //{
+                //    ShipEngineUI.shipTo_address_residential_indicator = "no";
+                //}
+
+                ShipEngineUI.shipFrom_name = shipFrom_name_TextBox.Text;
+                ShipEngineUI.shipFrom_phone = shipFrom_phone_TextBox.Text;
+                ShipEngineUI.shipFrom_company_name = shipFrom_company_name_TextBox.Text;
+                ShipEngineUI.shipFrom_address_line1 = shipFrom_address_line1_TextBox.Text;
+                ShipEngineUI.shipFrom_address_line2 = shipFrom_address_line2_TextBox.Text;
+                ShipEngineUI.shipFrom_address_line3 = shipFrom_address_line3_TextBox.Text;
+                ShipEngineUI.shipFrom_city_locality = shipFrom_city_locality_TextBox.Text;
+                ShipEngineUI.shipFrom_state_province = shipFrom_state_province_TextBox.Text;
+                ShipEngineUI.shipFrom_postal_code = shipFrom_postal_code_TextBox.Text;
+                ShipEngineUI.shipFrom_country_code = shipFrom_country_code_TextBox.Text;
+                ShipEngineUI.shipFrom_address_residential_indicator = shipFrom_address_residential_indicator_comboBox.SelectedItem.Text;
+                //if (shipFrom_address_residential_indicator_comboBox.SelectedItem == "")
+                //{
+                //    ShipEngineUI.shipFrom_address_residential_indicator = "no";
+                //}
+
+                ShipEngineUI.packages_dimensions_length = packages_dimensions_length_numericUpDown.Text;
+                ShipEngineUI.packages_dimensions_width = packages_dimensions_width_numericUpDown.Text;
+                ShipEngineUI.packages_dimensions_height = packages_dimensions_height_numericUpDown.Text;
+
+                ShipEngineUI.packages_weight_value = packages_weight_value_numericUpDown.Text;
+
+                //SHIPENGINE UI ADVANCED OPTIONS
+                //ShipEngineUI.advanced_options_bill_to_account = bill_to_account_textBox.Text;
+                //ShipEngineUI.advanced_options_bill_to_country_code = bill_to_country_code_textBox.Text;
+                //ShipEngineUI.advanced_options_bill_to_party = bill_to_party_comboBox.SelectedItem.ToString();
+
+                //ShipEngineUI.advanced_options_bill_to_postal_code = bill_to_postal_code_textBox.Text;
+
+                //ShipEngineUI.advanced_options_contains_alcohol = contains_alcohol_comboBox.SelectedItem.ToString();
+                //ShipEngineUI.advanced_options_delivered_duty_paid = delivered_duty_paid_comboBox.SelectedItem.ToString();
+
+                //ShipEngineUI.advanced_options_dry_ice = dry_ice_comboBox.SelectedItem.ToString();
+                //ShipEngineUI.advanced_options_dry_ice_weight_value = dry_ice_weight_numericUpDown.Value.ToString();
+                //ShipEngineUI.advanced_options_dry_ice_weight_unit = dry_ice_weight_comboBox.SelectedItem.ToString();
+
+                //ShipEngineUI.advanced_options_non_machinable = non_machinable_comboBox.SelectedItem.ToString();
+                //ShipEngineUI.advanced_options_saturday_delivery = saturday_delivery_comboBox.SelectedItem.ToString();
+
+                //ShipEngineUI.advanced_options_origin_type = origin_type_comboBox.SelectedItem.ToString();
+
+                //ShipEngineUI.advanced_options_custom_field1 = custom_field1_textBox.Text;
+                //ShipEngineUI.advanced_options_custom_field2 = custom_field2_textBox.Text;
+                //ShipEngineUI.advanced_options_custom_field3 = custom_field3_textBox.Text;
+
+                //ShipEngineUI.insurance_provider = insurance_provider_comboBox.SelectedItem.ToString();
+                //ShipEngineUI.packages_insured_value_amount = insured_value_amont_numericUpDown.Value.ToString();
+                //ShipEngineUI.packages_insured_value_currency = insured_value_currency_comboBox.SelectedItem.ToString();
+
+                //ShipEngineUI.advanced_options_third_party_consignee = third_party_consignee_comboBox.SelectedItem.ToString();
+                #endregion
+
+                //URI - POST
+                WebRequest request = WebRequest.Create("https://api.shipengine.com/v1/labels");
+                request.Method = "POST";
+
+                //API Key
+                request.Headers.Add("API-key", ShipEngineUI.apiKey);
+
+                //POST REQUEST
+                #region REQUEST BODY
+                string createLabelrequestBody = "" +
+                    "{\r\n    \"rate_options\": {" +
+                    "\r\n        \"carrier_ids\": [" +
+                    "\r\n            \"" + carrier_id + "\"" +
+                    "\r\n        ]" +
+                    "\r\n    }," +
+                    "\r\n    \"shipment\": {" +
+                    "\r\n        \"validate_address\": \"no_validation\"," +
+                    "\r\n        \"carrier_id\": \"" + carrier_id + "\"," +
+                    "\r\n        \"warehouse_id\": \"\"," +
+                    "\r\n        \"service_code\": \"" + service_code + "\"," +
+                    "\r\n        \"external_order_id\": null," +
+                    "\r\n        \"ship_date\": \"" + ship_date + "\"," +
+                    "\r\n        \"is_return_label\": false," +
+                    "\r\n        \"items\": []," +
+                    "\r\n        \"ship_to\": {" +
+                    "\r\n            \"name\": \"" + ShipEngineUI.shipTo_name + "\"," +
+                    "\r\n            \"phone\": \"" + ShipEngineUI.shipTo_phone + "\"," +
+                    "\r\n            \"company_name\": \"" + ShipEngineUI.shipTo_company_name + "\"," +
+                    "\r\n            \"address_line1\": \"" + ShipEngineUI.shipTo_address_line1 + "\"," +
+                    "\r\n            \"address_line2\": \"" + ShipEngineUI.shipTo_address_line2 + "\"," +
+                    "\r\n            \"address_line3\": \"" + ShipEngineUI.shipTo_address_line3 + "\"," +
+                    "\r\n            \"city_locality\": \"" + ShipEngineUI.shipTo_city_locality + "\"," +
+                    "\r\n            \"state_province\": \"" + ShipEngineUI.shipTo_state_province + "\"," +
+                    "\r\n            \"postal_code\": \"" + ShipEngineUI.shipTo_postal_code + "\"," +
+                    "\r\n            \"country_code\": \"" + ShipEngineUI.shipTo_country_code + "\"," +
+                    "\r\n            \"address_residential_indicator\": \"" + ShipEngineUI.shipTo_address_residential_indicator + "\"" +
+                    "\r\n        }," +
+                    "\r\n        \"ship_from\": {" +
+                    "\r\n            \"name\": \"" + ShipEngineUI.shipFrom_name + "\"," +
+                    "\r\n            \"phone\": \"" + ShipEngineUI.shipFrom_phone + "\"," +
+                    "\r\n            \"company_name\": \"" + ShipEngineUI.shipFrom_company_name + "\"," +
+                    "\r\n            \"address_line1\": \"" + ShipEngineUI.shipFrom_address_line1 + "\"," +
+                    "\r\n            \"address_line2\": \"" + ShipEngineUI.shipFrom_address_line2 + "\"," +
+                    "\r\n            \"address_line3\": \"" + ShipEngineUI.shipFrom_address_line3 + "\"," +
+                    "\r\n            \"city_locality\": \"" + ShipEngineUI.shipFrom_city_locality + "\"," +
+                    "\r\n            \"state_province\": \"" + ShipEngineUI.shipFrom_state_province + "\"," +
+                    "\r\n            \"postal_code\": \"" + ShipEngineUI.shipFrom_postal_code + "\"," +
+                    "\r\n            \"country_code\": \"" + ShipEngineUI.shipFrom_country_code + "\"," +
+                    "\r\n            \"address_residential_indicator\": \"" + ShipEngineUI.shipFrom_address_residential_indicator + "\"" +
+                    "\r\n        }," +
+                    "\r\n        \"confirmation\": \"" + delivery_confirmation_ComboBox.SelectedItem.ToString() + "\"," +
+                    "\r\n        \"origin_type\": \"\"," +
+                    "\r\n        \"insurance_provider\": \"" + insurance_provider_comboBox.SelectedItem.ToString() + "\"," +
+                    "\r\n        \"packages\": [" +
+                    "\r\n            {" +
+                    "\r\n                \"package_code\": \"" + package_code_ComboBox.SelectedItem.ToString() + "\"," +
+                    "\r\n                \"weight\": {" +
+                    "\r\n                    \"value\": " + ShipEngineUI.packages_weight_value + "," +
+                    "\r\n                    \"unit\": \"pound\"" +
+                    "\r\n                }," +
+                    "\r\n                \"dimensions\": {" +
+                    "\r\n                    \"unit\": \"inch\"," +
+                    "\r\n                    \"length\": " + ShipEngineUI.packages_dimensions_length + "," +
+                    "\r\n                    \"width\": " + ShipEngineUI.packages_dimensions_width + "," +
+                    "\r\n                    \"height\": " + ShipEngineUI.packages_dimensions_height + "" +
+                    "\r\n                }," +
+                    "\r\n                \"insured_value\": {" +
+                    "\r\n                    \"currency\": \"" + insured_value_currency_comboBox.SelectedItem.ToString() + "\"," +
+                    "\r\n                    \"amount\": \"" + insured_value_amont_numericUpDown.Text + "\"," +
+                    "\r\n                }," +
+                    "\r\n                \"label_messages\": {" +
+                    "\r\n                    \"reference1\": null," +
+                    "\r\n                    \"reference2\": null," +
+                    "\r\n                    \"reference3\": null" +
+                    "\r\n                }," +
+                    "\r\n                \"external_package_id\": \"" + labelLogId + "\"" +
+                    "\r\n            }" +
+                    "\r\n        ]" +
+                    "\r\n    }" +
+                    "\r\n}";
+                #endregion
+
+                ASCIIEncoding encoding = new ASCIIEncoding();
+                byte[] data = encoding.GetBytes(createLabelrequestBody);
+
+                request.ContentType = "application/json";
+                request.ContentLength = data.Length;
+
+                Stream stream = request.GetRequestStream();
+
+                //Documents path REQUEST LOG
+                //string docPath = @"..\..\Resources\Labels";
+                //File.WriteAllText(Path.Combine(docPath, "LabelRequest - " + labelLogId + ".txt"), createLabelrequestBody);
+
+                stream.Write(data, 0, data.Length);
+                stream.Close();
+
+                WebResponse requestResponse = request.GetResponse();
+                stream = requestResponse.GetResponseStream();
+
+
+                StreamReader parseResponse = new StreamReader(stream);
+                label_RichTextBox.Value = parseResponse.ReadToEnd();
+                string responseBodyText = label_RichTextBox.Value;
+
+                //Documents path RESPONSE LOG
+                //File.WriteAllText(Path.Combine(docPath, "LabelResponse - " + labelLogId + ".txt"), responseBodyText);
+
+                //GET LABELID
+                using (var reader = new StringReader(responseBodyText))
+                {
+
+                    for (string currentLine = reader.ReadLine(); currentLine != null; currentLine = reader.ReadLine())
+                    {
+
+                        if (currentLine.Contains("label_id") == true)
+                        {
+
+                            string label_id1 = currentLine.Replace("\"label_id\": \"", "");
+                            string label_id = label_id1.Replace("\",", "");
+
+                            //DECLARE VARIABLE
+                            ShipEngineUI.label_id = label_id.Trim();
+
+                        }
+                    }
+                }
+
+                // GET LABEL IMAGE
+                //LABEL_DOWNLOAD OBJECT
+                int labelDownloadOBJ1 = responseBodyText.IndexOf("\"label_download\"") + "\"label_download\"".Length;
+                int labelDownloadOBJ2 = responseBodyText.LastIndexOf("\"form_download\"");
+                stream.Close();
+
+                string labelDownloadOBJ3 = responseBodyText.Substring(labelDownloadOBJ1, labelDownloadOBJ2 - labelDownloadOBJ1);
+                //Needed to specify as UPS contains two Label download objects
+
+                int imgURL1 = labelDownloadOBJ3.IndexOf("\"png\": \"") + "\"png\": \"".Length;
+                int imgURL2 = labelDownloadOBJ3.LastIndexOf(".png");
+                stream.Close();
+
+                string imgURL3 = labelDownloadOBJ3.Substring(imgURL1, imgURL2 - imgURL1);
+                ShipEngineUI.ImageURL = imgURL3;
+
+                //Save image in logging
+                using (WebClient client = new WebClient())
+                {
+                    client.DownloadFileAsync(new Uri(imgURL3 + ".png"), @"..\..\Resources\Labels\Label-" + labelLogId + ".png");
+                }
+
+                labelImageBox.ImageUrl = (imgURL3 + ".png");
+
+                void_label_id_TextBox.Text = ShipEngineUI.label_id;
+
+                //CLOSE STREAM
+                parseResponse.Close();
+                stream.Close();
+
+                //label_history_listbox.Items.Clear();
+                //GetCurrentTrackingNumber();
+                //GetLabelHistory();
+            }
+            catch (WebException Exception)
+            {
+
+                using (WebResponse ShipEngineErrorResponse = Exception.Response)
+                {
+                    HttpWebResponse ShipEngineResponse = (HttpWebResponse)ShipEngineErrorResponse;
+                    Console.WriteLine("Error code: {0}", ShipEngineResponse.StatusCode);
+                    using (Stream parseResponse = ShipEngineErrorResponse.GetResponseStream())
+
+                    using (var reader = new StreamReader(parseResponse))
+                    {
+
+                        for (string currentLine = reader.ReadLine(); currentLine != null; currentLine = reader.ReadLine())
+                        {
+
+                            if (currentLine.Contains("message") == true)
+                            {
+
+                                string ShipEngineErrorBody1 = currentLine.Replace("\"message\": \"", "");
+                                string ShipEngineErrorBody = ShipEngineErrorBody1.Replace("\",", "");
+
+                                ShowMessageBox(this, ShipEngineErrorBody);
+
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception Exception)
+            {
+                ShowMessageBox(this, Exception.Message);
+            }
+        }
+
+        protected void labelImageBox_Click(object sender, EventArgs e)
+        {
+
+            void_label_id_TextBox.Text = "clicked";
+
+        }
+
+        
+        protected void print_Button_Click(object sender, EventArgs e)
+        {
+
+            PrintDocument pd = new PrintDocument();
+            //pd.PrintPage += PrintPage;
+            //pd.Print();
         }
     }
 }

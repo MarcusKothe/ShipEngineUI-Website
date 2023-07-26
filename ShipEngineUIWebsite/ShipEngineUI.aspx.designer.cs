@@ -87,6 +87,15 @@ namespace ShipEngineUI
         protected global::System.Web.UI.HtmlControls.HtmlTextArea package_code_RichTextBox;
 
         /// <summary>
+        /// label_RichTextBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea label_RichTextBox;
+
+        /// <summary>
         /// shipfromgroupBox control.
         /// </summary>
         /// <remarks>
@@ -283,6 +292,15 @@ namespace ShipEngineUI
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label label7;
+
+        /// <summary>
+        /// shipFrom_address_residential_indicator_comboBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList shipFrom_address_residential_indicator_comboBox;
 
         /// <summary>
         /// shiptogroupBox control.
@@ -483,6 +501,15 @@ namespace ShipEngineUI
         protected global::System.Web.UI.WebControls.Label label17;
 
         /// <summary>
+        /// shipTo_address_residential_indicator_comboBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList shipTo_address_residential_indicator_comboBox;
+
+        /// <summary>
         /// Fieldset1 control.
         /// </summary>
         /// <remarks>
@@ -492,13 +519,13 @@ namespace ShipEngineUI
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl Fieldset1;
 
         /// <summary>
-        /// Image1 control.
+        /// labelImageBox control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image Image1;
+        protected global::System.Web.UI.WebControls.Image labelImageBox;
 
         /// <summary>
         /// Fieldset2 control.
@@ -688,5 +715,50 @@ namespace ShipEngineUI
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTextArea Textarea1;
+
+        /// <summary>
+        /// Fieldset9 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Fieldset9;
+
+        /// <summary>
+        /// create_label_Button control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button create_label_Button;
+
+        /// <summary>
+        /// print_Button control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button print_Button;
+
+        /// <summary>
+        /// Fieldset10 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Fieldset10;
+
+        /// <summary>
+        /// void_label_id_TextBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox void_label_id_TextBox;
     }
 }
