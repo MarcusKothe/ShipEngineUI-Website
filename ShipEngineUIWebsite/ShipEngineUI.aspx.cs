@@ -11,6 +11,8 @@ using System.Web.Services.Description;
 using System.Web.UI;
 using System.Drawing;
 using System.Web.UI.WebControls;
+using System.Security.Principal;
+
 
 namespace ShipEngineUI
 {
@@ -19,10 +21,17 @@ namespace ShipEngineUI
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            GetCarrierAccounts();
+            if (!IsPostBack)
+            {
+                GetWarehouses();
 
-            GetWarehouses();
+                GetCarrierAccounts();
 
+                GetSalesOrders();
+
+                GetLabelHistory();
+            }
+           
             ship_date_TextBox.Text = DateTime.Now.ToString("yyyy-MM-dd");
         }
 
@@ -63,7 +72,7 @@ namespace ShipEngineUI
             public static string fulfillment_status = "";
 
             //API KEY
-            public static string apiKey = "TEST_zAMaFN9wXflZWzwmHlKbfGaYqOBTKHJtv/iDKay9t3E";
+            public static string apiKey = "TEST_ih19OEx3wVBhCUjTINHcKUfK4qevhTtSjDqV+T2RaK0";
 
             //ENDPOINT URL
             public static string urlString = "";
@@ -251,6 +260,7 @@ namespace ShipEngineUI
 
             }
         }
+
         public void GetWarehouses()
         {
 
@@ -327,6 +337,263 @@ namespace ShipEngineUI
             {
 
             }
+        }
+
+        public void GetSalesOrders()
+        {
+            //GET SALES ORDERS
+            try
+            {
+                //URL SOURCE
+                string URLstring = "https://api.shipengine.com/v-beta/sales_orders";
+
+                //REQUEST
+                WebRequest requestObject = WebRequest.Create(URLstring);
+                requestObject.Method = "GET";
+
+                //SE AUTH
+                requestObject.Headers.Add("API-key", ShipEngineUI.apiKey);
+
+                //RESPONSE
+                HttpWebResponse responseObjectGet = null;
+                responseObjectGet = (HttpWebResponse)requestObject.GetResponse();
+                string streamResponse = null;
+
+
+                //Get all sales orders
+                using (Stream stream = responseObjectGet.GetResponseStream())
+                {
+                    StreamReader responseRead = new StreamReader(stream);
+                    streamResponse = responseRead.ReadToEnd();
+
+                    using (var reader = new StringReader(streamResponse))
+                    {
+
+                        for (string currentLine = reader.ReadLine(); currentLine != null; currentLine = reader.ReadLine())
+                        {
+
+                            if (currentLine.Contains("sales_order_id") == true)
+                            {
+
+                                string sales_order_id1 = currentLine.Replace("\"sales_order_id\": \"", "");
+                                string sales_order_id = sales_order_id1.Replace("\",", "");
+
+                                //add to textbox
+                                sales_order_RichTextBox.Value += sales_order_id.Trim() + " | ";
+
+                                //ShipEngineUI.sales_order_id = sales_order_id;
+
+                            }
+                            else
+                            {
+                                currentLine.Replace(currentLine, "");
+                            }
+
+                            if (currentLine.Contains("external_order_number") == true)
+                            {
+
+                                string external_order_number1 = currentLine.Replace("\"external_order_number\": \"", "");
+                                string external_order_number = external_order_number1.Replace("\",", "");
+
+                                //add to textbox
+                                sales_order_RichTextBox.Value = sales_order_RichTextBox.Value.Trim() + external_order_number.Trim() + " - ";
+
+                                //ShipEngineUI.external_order_number = external_order_number;
+                            }
+                            else
+                            {
+                                currentLine.Replace(currentLine, "");
+                            }
+
+                            if (currentLine.Contains("fulfillment_status") == true)
+                            {
+
+                                string fulfillment_status1 = currentLine.Replace("\"fulfillment_status\": \"", "");
+                                string fulfillment_status = fulfillment_status1.Replace("\",", "");
+
+                                //add to textbox
+                                sales_order_RichTextBox.Value += fulfillment_status.Trim() + Environment.NewLine + ",";
+
+                                //ShipEngineUI.fulfillment_status = fulfillment_status;
+                            }
+                            else
+                            {
+                                currentLine.Replace(currentLine, "");
+                            }
+
+                            //string line = ShipEngineUI.external_order_number.Trim() + " - " + ShipEngineUI.fulfillment_status.Trim() + " | " +
+                            // ShipEngineUI.sales_order_id.Trim() + Environment.NewLine + ",";
+
+                            // sales_order_RichTextBox.Text += line;
+
+                        }
+
+                        //PARSE AND ADD SALES ORDERS
+                        string[] sales_order_list1 = sales_order_RichTextBox.Value.Split(',');
+                        string[] sales_order_list = sales_order_list1.Distinct().ToArray();
+                        foreach (string sales_order in sales_order_list)
+                        {
+                            if (sales_order.Trim() == "")
+                                continue;
+
+                            sales_order_ListBox.Items.Add(sales_order.Trim());
+                        }
+                    }
+                }
+            }
+            catch (Exception HTTPexception)
+            {
+                sales_order_ListBox.Items.Add("ShipEngine found no sales orders to import at this time.");
+                sales_order_ListBox.Enabled = false;
+                //notify_shipped_checkBox.Enabled = false;
+            }
+        }
+
+        
+        public void GetLabelHistory()
+        {
+            label_id_richTextBox.Value = string.Empty;
+
+            //GET LABELS
+            try
+            {
+                string todaysDate = DateTime.Today.ToString();
+
+                //URL SOURCE
+                string URLstring = "https://api.shipengine.com/v1/labels?created_at_start=" + todaysDate + "&page_size=100";
+                ShipEngineUI.get_label_URL = URLstring;
+
+                //REQUEST
+                WebRequest requestObject = WebRequest.Create(ShipEngineUI.get_label_URL);
+                requestObject.Method = "GET";
+
+                //SE AUTH
+                requestObject.Headers.Add("API-key", ShipEngineUI.apiKey);
+
+                //RESPONSE
+                HttpWebResponse responseObjectGet = null;
+                responseObjectGet = (HttpWebResponse)requestObject.GetResponse();
+                string streamResponse = null;
+
+                //Get List labels data
+                using (Stream stream = responseObjectGet.GetResponseStream())
+                {
+                    StreamReader responseRead = new StreamReader(stream);
+                    streamResponse = responseRead.ReadToEnd();
+
+                    using (var reader = new StringReader(streamResponse))
+                    {
+
+                        for (string currentLine = reader.ReadLine(); currentLine != null; currentLine = reader.ReadLine())
+                        {
+
+                            if (currentLine.Contains("label_id") == true)
+                            {
+
+                                string label_id1 = currentLine.Replace("\"label_id\": \"", "");
+                                string label_id = label_id1.Replace("\",", "");
+
+                                //add to textbox
+                                label_id_richTextBox.Value += label_id.Trim() + " | ";
+                                label_id = ShipEngineUI.label_url_label_id.Trim();
+
+                            }
+                            else
+                            {
+                                currentLine.Replace(currentLine, "");
+                            }
+
+                            if (currentLine.Contains("\"status\"") == true)
+                            {
+
+                                string voided1 = currentLine.Replace("\"", "");
+                                string voided = voided1.Replace(",", "");
+
+                                //add to textbox
+                                label_id_richTextBox.Value = label_id_richTextBox.Value.Trim() + voided.Trim() + " > ";
+
+                            }
+                            else
+                            {
+                                currentLine.Replace(currentLine, "");
+                            }
+
+                            if (currentLine.Contains("\"carrier_code\"") == true)
+                            {
+
+                                string carrier_code1 = currentLine.Replace("\"", "");
+                                string carrier_code = carrier_code1.Replace(",", "");
+
+                                //add to textbox
+                                label_id_richTextBox.Value = label_id_richTextBox.Value.Trim() + " " + carrier_code.Trim() + " < ";
+
+                            }
+                            else
+                            {
+                                currentLine.Replace(currentLine, "");
+                            }
+
+                            if (currentLine.Contains(ShipEngineUI.label_url_label_id.Trim() + ".png") == true)
+                            {
+
+                                string img_url1 = currentLine.Replace("\"png\": \"", "");
+                                string img_url = img_url1.Replace("\",", "");
+
+                                //add to textbox
+                                label_id_richTextBox.Value += img_url.Trim() + Environment.NewLine + ",";
+                            }
+                            else
+                            {
+                                currentLine.Replace(currentLine, "");
+                            }
+
+                            if (currentLine.Contains("\"total\": 543"))
+                            {
+
+                                ShipEngineUI.get_label_URL = ShipEngineUI.get_label_URL + "&page=2";
+
+                            }
+                            else
+                            {
+                                currentLine.Replace(currentLine, "");
+                            }
+
+                        }
+
+                        //PARSE AND ADD LABELS
+                        string[] label_id_list1 = label_id_richTextBox.Value.Split(',');
+                        string[] label_id_list = label_id_list1.Distinct().ToArray();
+                        foreach (string label_id in label_id_list)
+                        {
+                            if (label_id.Trim() == "")
+                                continue;
+
+                            label_history_listbox.Items.Add(label_id.Trim());
+
+                        }
+
+                        if (label_history_listbox.Items.Count == 0)
+                        {
+                            label_history_listbox.Enabled = false;
+                            create_manifest_button.Enabled = false;
+                            label_history_listbox.Items.Add("ShipEngine found no label history for today.");
+                        }
+                        else if (label_history_listbox.Items.Count != 0)
+                        {
+                            label_history_listbox.Enabled = true;
+                            create_manifest_button.Enabled = true;
+                            label_history_listbox.Items.Remove("ShipEngine found no label history for today.");
+                        }
+
+                        //RemoveURL(label_history_listbox, "http");
+                    }
+                }
+            }
+            catch (Exception HTTPexception)
+            {
+
+            }
+
         }
 
         protected void carrier_id_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -487,13 +754,7 @@ namespace ShipEngineUI
 
             //ADDED
             package_code_ComboBox.SelectedIndex = 0;
-
-            warehouse_id_ComboBox.Items.Clear();
-            GetWarehouses();
-
-            carrier_id_ComboBox.Items.Clear();
-            GetCarrierAccounts();
-
+            
             carrier_id_ComboBox.SelectedIndex = selectedIndex;
         }
 
@@ -693,11 +954,11 @@ namespace ShipEngineUI
                                 TextBoxes.Text = TextBoxes.Text.Replace("    ", "");
                             }
 
-                            warehouse_id_ComboBox.Items.Clear();
-                            GetWarehouses();
+                            //warehouse_id_ComboBox.Items.Clear();
+                            //GetWarehouses();
 
-                            carrier_id_ComboBox.Items.Clear();
-                            GetCarrierAccounts();
+                            //carrier_id_ComboBox.Items.Clear();
+                            //GetCarrierAccounts();
 
                             carrier_id_ComboBox.SelectedIndex = Cselectedindex;
                             warehouse_id_ComboBox.SelectedIndex = WHselectedindex;
@@ -984,7 +1245,7 @@ namespace ShipEngineUI
                     rate_response_RichTextBox.Value = rate_response_RichTextBox.Value.Replace("\"amount\": 0.0", "");
                     rate_response_RichTextBox.Value = rate_response_RichTextBox.Value.Replace(" ", "");
                     rate_response_RichTextBox.Value = rate_response_RichTextBox.Value.Replace("\"", "");
-                    Textarea1.Value = rateRequestBody;
+                    rateResponseRawTextBox.Value = rateRequestBody;
 
                 }
 
@@ -1315,6 +1576,8 @@ namespace ShipEngineUI
             {
                 ShowMessageBox(this, Exception.Message);
             }
+
+            GetLabelHistory();
         }
 
         protected void labelImageBox_Click(object sender, EventArgs e)
@@ -1331,6 +1594,333 @@ namespace ShipEngineUI
             PrintDocument pd = new PrintDocument();
             //pd.PrintPage += PrintPage;
             //pd.Print();
+        }
+
+        protected void sales_order_ListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //create_label_from_Order_Button.Enabled = true;
+
+            try
+            {
+                //GET SALES ORDER ID
+                string sales_order_id1 = sales_order_ListBox.SelectedItem.ToString();
+                sales_order_id1 = sales_order_id1.Remove(sales_order_id1.IndexOf("|") + 1);
+                string sales_order_id = sales_order_id1.Replace("|", "");
+
+                //URL SOURCE
+                string URLstring = "https://api.shipengine.com/v-beta/sales_orders/" + sales_order_id;
+
+                //REQUEST
+                WebRequest requestObject = WebRequest.Create(URLstring);
+                requestObject.Method = "GET"; ;
+
+                //SE AUTH
+                requestObject.Headers.Add("API-key", ShipEngineUI.apiKey);
+
+                //RESPONSE
+                HttpWebResponse responseObjectGet = null;
+                responseObjectGet = (HttpWebResponse)requestObject.GetResponse();
+                string streamResponse = null;
+
+                //Get Address
+                using (Stream stream = responseObjectGet.GetResponseStream())
+                {
+                    StreamReader responseRead = new StreamReader(stream);
+                    streamResponse = responseRead.ReadToEnd();
+
+                    //
+                    int originAddress1 = streamResponse.IndexOf("\"ship_to\": {") + "\"ship_to\": {".Length;
+                    int originAddress2 = streamResponse.LastIndexOf("\"sales_order_items\": ");
+
+                    string originAddress = streamResponse.Substring(originAddress1, originAddress2 - originAddress1);
+
+                    using (var reader = new StringReader(originAddress))
+                    {
+                        for (string currentLine = reader.ReadLine(); currentLine != null; currentLine = reader.ReadLine())
+                        {
+
+                            //NAME
+                            if (currentLine.Contains(" \"name\": \"") == true)
+                            {
+
+
+                                string sales_order_Name1 = currentLine.Replace("\"name\": \"", "");
+                                string sales_order_Name = sales_order_Name1.Replace("\",", "");
+
+                                //add to textbox
+
+                                shipTo_name_TextBox.Text = sales_order_Name;
+
+                            }
+
+                            //PHONE
+                            if (currentLine.Contains("\"phone\": \"") == true)
+                            {
+
+                                string sales_order_Phone1 = currentLine.Replace("\"phone\": \"", "");
+                                string sales_order_Phone = sales_order_Phone1.Replace("\",", "");
+
+                                //add to textbox
+
+                                shipTo_phone_TextBox.Text = sales_order_Phone;
+                            }
+
+                            //Company
+                            if (currentLine.Contains("\"company_name\": \"") == true)
+                            {
+
+                                string sales_order_CompanyName1 = currentLine.Replace("\"company_name\": \"", "");
+                                string sales_order_CompanyName = sales_order_CompanyName1.Replace("\",", "");
+
+                                //add to textbox
+
+                                shipTo_company_name_TextBox.Text = sales_order_CompanyName;
+                            }
+
+                            //AddressLine 1
+                            if (currentLine.Contains("\"address_line1\": \"") == true)
+                            {
+
+                                string sales_order_AddressL1 = currentLine.Replace("\"address_line1\": \"", "");
+                                string sales_order_AddressL = sales_order_AddressL1.Replace("\",", "");
+
+                                //add to textbox
+
+                                shipTo_address_line1_TextBox.Text = sales_order_AddressL;
+                            }
+
+                            //AddressLine 2
+                            if (currentLine.Contains("\"address_line2\": \"") == true)
+                            {
+
+                                string sales_order_AddressL2 = currentLine.Replace("\"address_line2\": \"", "");
+                                string sales_order_AddressL3 = sales_order_AddressL2.Replace("\",", "");
+
+                                //add to textbox
+
+                                shipTo_address_line2_TextBox.Text = sales_order_AddressL3;
+                            }
+
+
+                            //AddressLine 3
+                            if (currentLine.Contains("\"address_line3\": \"") == true)
+                            {
+
+                                string sales_order_AddressL4 = currentLine.Replace("\"address_line3\": \"", "");
+                                string sales_order_AddressL5 = sales_order_AddressL4.Replace("\",", "");
+
+                                //add to textbox
+
+                                shipTo_address_line3_TextBox.Text = sales_order_AddressL5;
+                            }
+
+                            //City
+                            if (currentLine.Contains("\"city_locality\": \"") == true)
+                            {
+
+                                string sales_order_City1 = currentLine.Replace("\"city_locality\": \"", "");
+                                string sales_order_City = sales_order_City1.Replace("\",", "");
+
+                                //add to textbox
+
+                                shipTo_city_locality_TextBox.Text = sales_order_City;
+                            }
+
+                            //State Province
+                            if (currentLine.Contains("\"state_province\": \"") == true)
+                            {
+
+                                string sales_order_StateProvince1 = currentLine.Replace("\"state_province\": \"", "");
+                                string sales_order_StateProvince = sales_order_StateProvince1.Replace("\",", "");
+
+                                //add to textbox
+
+                                shipTo_state_province_TextBox.Text = sales_order_StateProvince;
+                            }
+
+                            //Postal Code
+                            if (currentLine.Contains("\"postal_code\": \"") == true)
+                            {
+
+                                string sales_order_PostalCode1 = currentLine.Replace("\"postal_code\": \"", "");
+                                string sales_order_PostalCode = sales_order_PostalCode1.Replace("\",", "");
+
+                                //add to textbox
+
+                                shipTo_postal_code_TextBox.Text = sales_order_PostalCode;
+                            }
+
+                            //Country Code
+                            if (currentLine.Contains("\"country_code\": \"") == true)
+                            {
+
+                                string sales_order_CountryCode1 = currentLine.Replace("\"country_code\": \"", "");
+                                string sales_order_CountryCode = sales_order_CountryCode1.Replace("\",", "");
+
+                                //add to textbox
+
+                                shipTo_country_code_TextBox.Text = sales_order_CountryCode;
+
+                            }
+
+                            //remove spaces
+                            //List Textboxes
+                            IList<T> GetAllControls<T>(Control control) where T : Control
+                            {
+                                var TextBoxes = new List<T>();
+                                foreach (Control item in control.Controls)
+                                {
+                                    var ctr = item as T;
+                                    if (ctr != null)
+                                        TextBoxes.Add(ctr);
+                                    else
+                                        TextBoxes.AddRange(GetAllControls<T>(item));
+                                }
+                                return TextBoxes;
+                            }
+
+                            //remove spaces loop
+                            var textBoxesList = GetAllControls<TextBox>(this);
+                            foreach (TextBox TextBoxes in textBoxesList)
+                            {
+                                TextBoxes.Text = TextBoxes.Text.Replace("    ", "");
+                            }
+
+
+                        }
+                    }
+                }
+
+            }
+            catch (Exception HTTPexception)
+            {
+
+            }
+
+        }
+
+        public void GetCurrentTrackingNumber()
+        {
+            string input = label_RichTextBox.Value;
+
+            using (var reader = new StringReader(input))
+            {
+
+                for (string currentLine = reader.ReadLine(); currentLine != null; currentLine = reader.ReadLine())
+                {
+
+                    if (currentLine.Contains("tracking_number") == true)
+                    {
+
+                        string tracking_number1 = currentLine.Replace("\"tracking_number\": \"", "");
+                        string tracking_number = tracking_number1.Replace("\",", "");
+
+                        ShipEngineUI.Tracking_number = tracking_number.Trim();
+
+                        tracking_number_textBox.Text = "Tracking Number: " + ShipEngineUI.Tracking_number;
+
+                    }
+
+                }
+            }
+        }
+
+        protected void label_history_listbox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+
+                //GET SELECTED LabelID ID
+                string label_id1 = label_history_listbox.SelectedItem.ToString();
+                label_id1 = label_id1.Remove(label_id1.IndexOf("|") + 1);
+                string label_id = label_id1.Replace("|", "");
+
+                //GET LABEL URL
+                string label_url1 = label_history_listbox.SelectedItem.ToString();
+                //label_url1 = label_url1.Remove(label_url1.LastIndexOf("<") + 1);
+                string label_url = label_url1.Substring(label_url1.LastIndexOf('<') + 1);
+
+                void_label_id_TextBox.Text = label_id.Trim();
+                labelImageBox.ImageUrl = (label_url);
+
+                if (label_history_listbox.Text.Contains("completed"))
+                {
+                    //Select labels to void
+                    if (!manifest_label_id_richTextBox.Value.Contains(label_id.Trim()))
+                    {
+                        
+                        manifest_label_id_richTextBox.Value += "\"" + label_id.Trim() + "\"" + ",";
+                    }
+                    else if (manifest_label_id_richTextBox.Value.Contains(label_id.Trim()))
+                    {
+                        string currentSelection = "\"" + label_id.Trim() + "\",";
+
+                        manifest_label_id_richTextBox.Value = manifest_label_id_richTextBox.Value.Replace(currentSelection, "");
+                    }
+                }
+                else
+                {
+
+                }
+
+                //GET LABELS
+                try
+                {
+
+                    //URL SOURCE
+                    string URLstring = "https://api.shipengine.com/v1/labels/" + label_id.Trim();
+
+                    //REQUEST
+                    WebRequest requestObject = WebRequest.Create(URLstring);
+                    requestObject.Method = "GET";
+
+                    //SE AUTH
+                    requestObject.Headers.Add("API-key", ShipEngineUI.apiKey);
+
+                    //RESPONSE
+                    HttpWebResponse responseObjectGet = null;
+                    responseObjectGet = (HttpWebResponse)requestObject.GetResponse();
+                    string streamResponse = null;
+
+                    //Get List labels data
+                    using (Stream stream = responseObjectGet.GetResponseStream())
+                    {
+                        StreamReader responseRead = new StreamReader(stream);
+                        streamResponse = responseRead.ReadToEnd();
+
+                        label_RichTextBox.Value = streamResponse;
+
+                        using (var reader = new StringReader(streamResponse))
+                        {
+
+                            for (string currentLine = reader.ReadLine(); currentLine != null; currentLine = reader.ReadLine())
+                            {
+
+
+
+                            }
+                        }
+                    }
+
+                    GetCurrentTrackingNumber();
+                }
+                catch (Exception HTTPexception)
+                {
+
+                }
+            }
+            catch (Exception HTTPexception)
+            {
+
+            }
+
+        }
+
+        protected void void_label_id_Button_Click(object sender, EventArgs e)
+        {
+
+
+
         }
     }
 }

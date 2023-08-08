@@ -1,5 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ShipEngineUI.aspx.cs" Inherits="ShipEngineUI.ShipEngineUIWebsite" Async="true" %>
-
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ShipEngineUI.aspx.cs" Inherits="ShipEngineUI.ShipEngineUIWebsite" Async="true" %>  
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -47,9 +46,9 @@
         .auto-style5 {
             position: absolute;
             left: 15px;
-            top: 465px;
+            top: 460px;
             width: 315px;
-            height: 166px;
+            height: 171px;
         }
         .auto-style6 {
             position: absolute;
@@ -97,12 +96,16 @@
             margin-top: 0px;
         }
         .auto-style11 {
+            border-style: none;
+            border-color: inherit;
+            border-width: 0;
             position: absolute;
-            left: 15px;
-            top: 655px;
-            width: 306px;
-            height: 121px;
+            left: 5px;
+            top: 645px;
+            width: 315px;
+            height: 166px;
             margin-top: 0px;
+            margin-bottom: 0px;
         }
 
         .auto-style12 {
@@ -125,22 +128,14 @@
             top: 78px;
             position: absolute;
         }
-        .auto-style16 {
-            position: absolute;
-            left: 1155px;
-            top: 485px;
-            width: 285px;
-            height: 243px;
-            margin-top: 0px;
-            right: 20px;
-        }
         .auto-style17 {
             position: absolute;
-            left: 1143px;
-            top: 26px;
-            width: 305px;
-            height: 265px;
+            left: 1153px;
+            top: 47px;
+            width: 420px;
+            height: 715px;
             margin-top: 0px;
+
         }
         .auto-style18 {
             border-style: none;
@@ -159,11 +154,15 @@
             height: 274px;
             margin-top: 0px;
         }
+        .auto-style20 {
+            z-index: 135;
+            width: 100px;
+        }
     </style>
 </head>
 <body>
     <form id="form1" runat="server">
-
+        <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
         <fieldset id="Fieldset3" runat="server" class="auto-style6">
 
             <asp:DropDownList ID="carrier_id_ComboBox" runat="server" Height="21px" Width="308px" onselectedindexchanged="carrier_id_ComboBox_SelectedIndexChanged" AutoPostBack="True" AppendDataBoundItems="true"></asp:DropDownList>
@@ -177,12 +176,14 @@
 
         <div>
             
+        <textarea id="rateResponseRawTextBox" runat="server" class="auto-style12" cols="20" name="S3" rows="1" hidden="hidden" readonly="readonly"></textarea>
         <textarea id="warehouse_id_RichTextBox" runat="server" cols="20" name="S2" rows="2" hidden="hidden" readonly="readonly"></textarea>
         <textarea id="carrier_id_RichTextBox" runat="server" cols="20" name="S1" rows="2"  hidden="hidden" readonly="readonly"></textarea>
         <textarea id="service_code_RichTextBox" runat="server" cols="20" name="S2" rows="2"  hidden="hidden" readonly="readonly"></textarea>
         <textarea id="package_code_RichTextBox" runat="server" cols="20" name="S2" rows="2"  hidden="hidden" readonly="readonly"></textarea>
         <textarea id="label_RichTextBox" runat="server" cols="20" name="S2" rows="2"  hidden="hidden" readonly="readonly"></textarea>
-
+        <textarea id="sales_order_RichTextBox" runat="server" cols="20" name="S2" rows="2"  hidden="hidden" readonly="readonly"></textarea>
+        <textarea id="label_id_richTextBox" runat="server" cols="20" name="S2" rows="2"  hidden="hidden" readonly="readonly"></textarea>
             
         </div>
             
@@ -247,13 +248,13 @@
 
         <fieldset id="Fieldset1" runat="server" class="auto-style9">
 
-            <asp:Image ID="labelImageBox" runat="server" Height="730px" Width="448px" OnClientClick="labelImageBox_Click" />
+            <asp:Image ID="labelImageBox" runat="server" Height="730px" Width="448px" OnClientClick="labelImageBox_Click" BorderStyle="Solid" BorderWidth="1px" />
 
         </fieldset>
 
 
         <fieldset id="Fieldset2" runat="server" class="auto-style5" style="font-family:'Roboto'; font-size:8pt; ">
-
+            <legend style="color:black; font-family:'Roboto'; font-size:8pt; " class="auto-style20">Configure Package</legend>
             
             Package <asp:DropDownList ID="package_code_ComboBox" runat="server" Height="21px" Width="213px" CssClass="auto-style7"></asp:DropDownList>
             <br />
@@ -305,19 +306,40 @@
 
         <fieldset id="Fieldset5" runat="server" class="auto-style11">
 
-            <asp:ListBox ID="sales_order_ListBox" runat="server"></asp:ListBox>
+            <asp:ListBox ID="sales_order_ListBox" runat="server" Height="138px" Width="330px" OnSelectedIndexChanged="sales_order_ListBox_SelectedIndexChanged" AutoPostBack="true"></asp:ListBox>
 
            </fieldset>
 
         <fieldset id="Fieldset7" runat="server" class="auto-style10">
 
-            <textarea id="rate_response_RichTextBox" runat="server" class="auto-style19" cols="20" name="S4" rows="1"></textarea>
+            <textarea id="rate_response_RichTextBox" runat="server" class="auto-style19" cols="20" name="S4" rows="1" readonly="readonly" draggable="auto"></textarea>
 
            </fieldset>
 
-        <fieldset id="Fieldset8" runat="server" class="auto-style17">
+        <fieldset id="Fieldset8" runat="server" class="auto-style17 ">
 
-            <textarea id="Textarea1" runat="server" class="auto-style12" cols="20" name="S3" rows="1"></textarea>
+            <asp:ListBox ID="label_history_listbox" runat="server" Height="213px" Width="415px" OnSelectedIndexChanged="label_history_listbox_SelectedIndexChanged" AutoPostBack="true"></asp:ListBox>
+            <br />
+
+            <asp:TextBox ID="void_label_id_TextBox" runat="server" Height="16px" Width="315px"></asp:TextBox>
+            <asp:Button ID="void_label_id_Button" runat="server" Text="Void Label" OnClick="void_label_id_Button_Click"/>
+            <br />
+
+            <asp:TextBox ID="tracking_number_textBox" runat="server" Height="19px" Width="405px"></asp:TextBox>
+            <br />
+
+            <asp:Label ID="Label18" runat="server" Text="Labels Selected to Manifest - Please select 'Completed' labels above."></asp:Label>
+            <br />
+
+            <textarea id="manifest_label_id_richTextBox" runat="server" cols="20" rows="2"></textarea>
+            <br />
+
+            <asp:Button ID="create_manifest_button" runat="server" Text="Create Manifest" />
+            <asp:Label ID="Label19" runat="server" Text="Manifest download URL"></asp:Label>
+            <asp:Button ID="clear_manifest_textBox_button" runat="server" Text="Clear selections" />
+            <br />
+
+            <asp:TextBox ID="manifest_textBox" runat="server"></asp:TextBox>
 
            </fieldset>
 
@@ -329,15 +351,6 @@
 
            </fieldset>
 
-        <fieldset id="Fieldset10" runat="server" class="auto-style16">
-            
-
-
-            <asp:TextBox ID="void_label_id_TextBox" runat="server"></asp:TextBox>
-
-
-
-           </fieldset>
     </form>
 </body>
 </html>
