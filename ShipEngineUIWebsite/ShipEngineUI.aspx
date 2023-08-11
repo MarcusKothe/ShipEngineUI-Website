@@ -153,10 +153,12 @@
             width: 324px;
             height: 274px;
             margin-top: 0px;
+             resize: none;
         }
         .auto-style20 {
             z-index: 135;
-            width: 100px;
+            width: 90px;
+            height: 15px;
         }
     </style>
 </head>
@@ -184,7 +186,8 @@
         <textarea id="label_RichTextBox" runat="server" cols="20" name="S2" rows="2"  hidden="hidden" readonly="readonly"></textarea>
         <textarea id="sales_order_RichTextBox" runat="server" cols="20" name="S2" rows="2"  hidden="hidden" readonly="readonly"></textarea>
         <textarea id="label_id_richTextBox" runat="server" cols="20" name="S2" rows="2"  hidden="hidden" readonly="readonly"></textarea>
-            
+        <textarea id="void_label_id_RichTextBox" runat="server" cols="20" name="S2" rows="2"  hidden="hidden" readonly="readonly"></textarea>   
+
         </div>
             
         <fieldset id="shipfromgroupBox" runat="server" class="auto-style2">
@@ -284,7 +287,7 @@
             </asp:DropDownList>
             <br />
             <br />
-            Insured Value <asp:TextBox ID="insured_value_amont_numericUpDown" runat="server" Height="21px" Width="20px">0</asp:TextBox>
+            Insured Value <asp:TextBox ID="insured_value_amont_numericUpDown" runat="server" Height="20px" Width="20px">0</asp:TextBox>
             <asp:DropDownList ID="insured_value_currency_comboBox" runat="server" Height="21px" Width="100px" CssClass="auto-style7">
                 <asp:ListItem>USD</asp:ListItem>
             </asp:DropDownList>
@@ -328,10 +331,10 @@
             <asp:TextBox ID="tracking_number_textBox" runat="server" Height="19px" Width="405px"></asp:TextBox>
             <br />
 
-            <asp:Label ID="Label18" runat="server" Text="Labels Selected to Manifest - Please select 'Completed' labels above."></asp:Label>
+            <asp:Label ID="Label18" runat="server" Text="Labels Selected to Manifest - Please select 'Completed' labels."></asp:Label>
             <br />
 
-            <textarea id="manifest_label_id_richTextBox" runat="server" cols="20" rows="2"></textarea>
+            <textarea id="manifest_label_id_richTextBox" runat="server" cols="20" rows="2" ></textarea>
             <br />
 
             <asp:Button ID="create_manifest_button" runat="server" Text="Create Manifest" />

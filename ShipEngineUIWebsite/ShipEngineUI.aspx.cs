@@ -12,7 +12,7 @@ using System.Web.UI;
 using System.Drawing;
 using System.Web.UI.WebControls;
 using System.Security.Principal;
-
+using ShipEngineUIWebsite;
 
 namespace ShipEngineUI
 {
@@ -20,6 +20,9 @@ namespace ShipEngineUI
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            apiKeyPrompt THIS = new apiKeyPrompt();
+            ShowMessageBox(THIS, "api key");
 
             if (!IsPostBack)
             {
@@ -31,7 +34,7 @@ namespace ShipEngineUI
 
                 GetLabelHistory();
             }
-           
+            
             ship_date_TextBox.Text = DateTime.Now.ToString("yyyy-MM-dd");
         }
 
@@ -453,7 +456,9 @@ namespace ShipEngineUI
         public void GetLabelHistory()
         {
             label_id_richTextBox.Value = string.Empty;
+            label_history_listbox.Items.Clear();
 
+            
             //GET LABELS
             try
             {
@@ -568,7 +573,15 @@ namespace ShipEngineUI
                             if (label_id.Trim() == "")
                                 continue;
 
-                            label_history_listbox.Items.Add(label_id.Trim());
+                            if (label_id.StartsWith("h"))
+                            {
+
+                            }
+                            else
+                            {
+                                label_history_listbox.Items.Add(label_id.Trim());
+                            }
+                            
 
                         }
 
@@ -1918,8 +1931,81 @@ namespace ShipEngineUI
 
         protected void void_label_id_Button_Click(object sender, EventArgs e)
         {
+            
+            manifest_label_id_richTextBox.Value = manifest_label_id_richTextBox.Value.Replace("\"" + void_label_id_TextBox.Text + "\",", "");
 
+            try
+            {
+                //GET SELECTED LabelID ID
+                string label_id1 = label_history_listbox.SelectedItem.ToString();
+                label_id1 = label_id1.Remove(label_id1.IndexOf("|") + 1);
+                string label_id = label_id1.Replace("|", "");
 
+                //URI - POST
+                WebRequest request = WebRequest.Create("https://api.shipengine.com/v1/labels/" + label_id.Trim() + "/void");
+                request.Method = "PUT";
+
+                //API Key
+                request.Headers.Add("API-key", ShipEngineUI.apiKey);
+
+                Stream stream = request.GetRequestStream();
+
+                stream.Close();
+
+                WebResponse requestResponse = request.GetResponse();
+                stream = requestResponse.GetResponseStream();
+
+                StreamReader parseResponse = new StreamReader(stream);
+                void_label_id_RichTextBox.Value = parseResponse.ReadToEnd();
+                string responseBodyText = void_label_id_RichTextBox.Value;
+
+                //RESPONSE
+                HttpWebResponse responseObjectGet = null;
+                responseObjectGet = (HttpWebResponse)request.GetResponse();
+                string streamResponse = null;
+
+                //Get variables to declare globally
+                using (Stream labelStream = responseObjectGet.GetResponseStream())
+                {
+                    StreamReader responseRead = new StreamReader(stream);
+                    streamResponse = responseRead.ReadToEnd();
+
+                    using (var reader = new StringReader(responseBodyText))
+                    {
+
+                        for (string currentLine = reader.ReadLine(); currentLine != null; currentLine = reader.ReadLine())
+                        {
+
+                            if (currentLine.Contains("message") == true)
+                            {
+
+                                string void_label_id_Response1 = currentLine.Replace("\"message\": \"", "");
+                                string void_label_id_Response = void_label_id_Response1.Replace("\"", "");
+
+                                //DECLARE VARIABLE
+                                ShipEngineUI.void_label_id_Response = void_label_id_Response.Trim();
+
+                            }
+                        }
+                    }
+                }
+
+                ShowMessageBox(this, ShipEngineUI.void_label_id_Response);
+
+                //CLOSE STREAM
+                parseResponse.Close();
+                stream.Close();
+
+                label_history_listbox.Items.Clear();
+                GetLabelHistory();
+
+            }
+            catch (Exception void_label_id_response_Error)
+            {
+
+                ShowMessageBox(this, void_label_id_response_Error + Environment.NewLine + "This label could not be voided.");
+
+            }
 
         }
     }
